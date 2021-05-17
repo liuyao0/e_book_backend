@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ebook.ebook.entity.Book;
 import com.ebook.ebook.entity.Order;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,20 +67,40 @@ public class OrderController {
     }
 
     @RequestMapping("/carttoorder")
-    public String cartToOrder(@RequestParam(value="user_id") Integer user_id)
-    {
-        List<Map<String,Object>> cart=new ArrayList<Map<String,Object>>();
-        cart=jdbcTemplate.queryForList("select book.book_id,cart_book_num\n" +
+    public String cartToOrder(@RequestParam(value="user_id") Integer user_id) {
+        List<Map<String, Object>> cart = new ArrayList<Map<String, Object>>();
+        cart = jdbcTemplate.queryForList("select book.book_id,cart_book_num\n" +
                 "from book,cart\n" +
-                "where book.book_id=cart.book_id and user_id="+user_id.toString());
-        if(cart.isEmpty())
+                "where book.book_id=cart.book_id and user_id=" + user_id.toString());
+        if (cart.isEmpty())
             return "-2"; //购物车为空
-        Iterator<Map<String,Object>> iter=cart.iterator();
-        while(iter.hasNext())
-        {
-            Map<String,Object> cartItem=(Map<String, Object>) iter.next();
+        Iterator<Map<String, Object>> iter = cart.iterator();
+        String createOrder="INSERT INTO `order` (order_id,order_time, user_id) VALUE (0,now(),?)";
 
+        String url = "jdbc:mysql://59.78.1.141:3306/e-book";
+        String user = "root";
+        String password = "130336";
+        Integer order_id=0;
+        try(Connection connection= DriverManager.getConnection(url,user,password))
+        {
+            PreparedStatement preparedStatement=connection.prepareStatement(createOrder,Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1,user_id);
+            preparedStatement.executeUpdate();
+            ResultSet orderId=preparedStatement.getGeneratedKeys();
+            if(orderId.next())
+                order_id=orderId.getInt(1);
         }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return order_id.toString();
+
+//        while(iter.hasNext())
+//        {
+//            Map<String,Object> cartItem=(Map<String, Object>) iter.next();
+//
+//        }
     }
 
 
