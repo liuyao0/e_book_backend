@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -25,7 +26,7 @@ public class OrderController {
     JdbcTemplate jdbcTemplate;
 
     @RequestMapping("/orderInfo")
-    public String getOrder(@RequestParam(value="user-id")Integer user_id)
+    public String getOrder(@RequestParam(value="user_id")Integer user_id)
     {
         List<Order> result = new ArrayList<Order>();
         result=jdbcTemplate.query("SELECT orderDetail.order_id,order_time,orderDetail.book_id,name,isbn,author,press,quantity,realprice, `order`.user_id" +
@@ -64,4 +65,24 @@ public class OrderController {
         String ordersString = JSON.toJSONString(ordersJson, SerializerFeature.BrowserCompatible);
         return ordersString;
     }
+
+    @RequestMapping("/carttoorder")
+    public String cartToOrder(@RequestParam(value="user_id") Integer user_id)
+    {
+        List<Map<String,Object>> cart=new ArrayList<Map<String,Object>>();
+        cart=jdbcTemplate.queryForList("select book.book_id,cart_book_num\n" +
+                "from book,cart\n" +
+                "where book.book_id=cart.book_id and user_id="+user_id.toString());
+        if(cart.isEmpty())
+            return "-2"; //购物车为空
+        Iterator<Map<String,Object>> iter=cart.iterator();
+        while(iter.hasNext())
+        {
+            Map<String,Object> cartItem=(Map<String, Object>) iter.next();
+
+        }
+    }
+
+
+
 }
