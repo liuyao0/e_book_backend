@@ -35,7 +35,7 @@ public class BookController {
                         rs.getString("name"),
                         rs.getString("author"),
                         rs.getString("press"),
-                        rs.getDouble("price"),
+                        rs.getBigDecimal("price"),
                         rs.getInt("inventory"),
                         rs.getString("description"),
                         rs.getString("image"))
@@ -73,7 +73,7 @@ public class BookController {
                         rs.getString("name"),
                         rs.getString("author"),
                         rs.getString("press"),
-                        rs.getDouble("price"),
+                        rs.getBigDecimal("price"),
                         rs.getInt("inventory"),
                         rs.getString("description"),
                         rs.getString("image"))

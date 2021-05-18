@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class OrderController {
                         rs.getString("name"),
                         rs.getString("author"),
                         rs.getString("press"),
-                        rs.getDouble("realprice"),
+                        rs.getBigDecimal("realprice"),
                         rs.getInt("quantity")
                 ));
         ArrayList<JSONArray> ordersJson = new ArrayList<JSONArray>();
@@ -69,7 +70,7 @@ public class OrderController {
     @RequestMapping("/carttoorder")
     public String cartToOrder(@RequestParam(value="user_id") Integer user_id) {
         List<Map<String, Object>> cart = new ArrayList<Map<String, Object>>();
-        cart = jdbcTemplate.queryForList("select book.book_id,cart_book_num\n" +
+        cart = jdbcTemplate.queryForList("select book.book_id,cart_book_num,price\n" +
                 "from book,cart\n" +
                 "where book.book_id=cart.book_id and user_id=" + user_id.toString());
         if (cart.isEmpty())
@@ -77,7 +78,7 @@ public class OrderController {
         Iterator<Map<String, Object>> iter = cart.iterator();
         String createOrder="INSERT INTO `order` (order_id,order_time, user_id) VALUE (0,now(),?)";
 
-        String url = "jdbc:mysql://59.78.1.141:3306/e-book";
+        String url = "jdbc:mysql://localhost:3306/e-book";
         String user = "root";
         String password = "130336";
         Integer order_id=0;
@@ -94,13 +95,17 @@ public class OrderController {
         {
             e.printStackTrace();
         }
-        return order_id.toString();
+        while(iter.hasNext())
+        {
+            Map<String,Object> cartItem=(Map<String, Object>) iter.next();
+            Integer book_id=(Integer)cartItem.get("book_id");
+            Integer quantity=(Integer) cartItem.get("cart_book_num");
+            BigDecimal real_price=(BigDecimal) cartItem.get("price");
+            jdbcTemplate.update("INSERT INTO orderdetail (order_id, book_id, quantity, realprice) value ("+order_id.toString()+","+book_id.toString()+","+quantity.toString()+","+real_price.toString()+")");
+        }
 
-//        while(iter.hasNext())
-//        {
-//            Map<String,Object> cartItem=(Map<String, Object>) iter.next();
-//
-//        }
+        jdbcTemplate.update("DELETE FROM cart WHERE user_id="+user_id.toString());
+        return "1";
     }
 
 

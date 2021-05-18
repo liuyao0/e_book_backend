@@ -1,5 +1,6 @@
 package com.ebook.ebook.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Order {
@@ -23,7 +24,7 @@ public class Order {
 
     public Order(Integer orderId, Integer userId, Date orderTime,
                  Long book_id, String isbn, String name,
-                 String author, String press,Double price,
+                 String author, String press, BigDecimal price,
                  Integer quantity)
     {
         this.orderId=orderId;
