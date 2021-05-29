@@ -3,6 +3,8 @@ package com.ebook.ebook.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ebook.ebook.entity.Book;
+import com.ebook.ebook.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,70 +21,54 @@ import java.util.Map;
 @RestController
 public class CartController {
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private CartService cartService;
 
     @RequestMapping("/cart")
-    public String  cartData(@RequestParam(value = "user_id")Integer user_id) {
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        result = jdbcTemplate.queryForList(
-                "select book.book_id,book.isbn,book.image,book.name,book.author,book.press,book.price,cart_book_num " +
-                        "from book,cart " +
-                        "where user_id=" + user_id.toString() + " and book.book_id=cart.book_id;"
-        );
-
-        Iterator<Map<String, Object>> iter = result.iterator();
+    public String  cartData(@RequestParam(value = "user_id")Integer userId) {
+        Map<Book,Integer> cartBook=cartService.findByUserId(userId);
         ArrayList<JSONArray> booksJson = new ArrayList<JSONArray>();
-        while (iter.hasNext()) {
-            Map<String, Object> res = (Map<String, Object>) iter.next();
+        for(Map.Entry<Book,Integer> entry:cartBook.entrySet()){
+            Book book=entry.getKey();
+            Integer cartBookNum=entry.getValue();
             ArrayList<Object> arrayList = new ArrayList<Object>();
-            arrayList.add(res.get("book_id"));
-            arrayList.add(res.get("isbn"));
-            arrayList.add(res.get("image"));
-            arrayList.add(res.get("name"));
-            arrayList.add(res.get("author"));
-            arrayList.add(res.get("press"));
-            arrayList.add(res.get("price"));
-            arrayList.add(res.get("cart_book_num"));
-            booksJson.add((JSONArray) JSONArray.toJSON(arrayList));
+            arrayList.add(book.getBookId());
+            arrayList.add(book.getIsbn());
+            arrayList.add(book.getImage());
+            arrayList.add(book.getName());
+            arrayList.add(book.getAuthor());
+            arrayList.add(book.getPress());
+            arrayList.add(book.getPrice());
+            arrayList.add(cartBookNum);
+            booksJson.add((JSONArray)JSONArray.toJSON(arrayList));
         }
         String booksString = JSON.toJSONString(booksJson, SerializerFeature.BrowserCompatible);
         return booksString;
     }
 
     @RequestMapping("/cartchange")
-    public void changeCart(@RequestParam(value="user_id")Integer user_id,
-                             @RequestParam(value="book_id")Integer book_id,
+    public void changeCart(@RequestParam(value="user_id")Integer userId,
+                             @RequestParam(value="book_id")Integer bookId,
                              @RequestParam(value="num")Integer num
 
 
     )
     {
-        jdbcTemplate.update(
-                "UPDATE cart SET cart_book_num = "+num.toString()+" " +
-                        "WHERE book_id = "+book_id.toString()+" and user_id="+user_id.toString()
-        );
+        cartService.changeCartNum(userId,bookId,num);
     }
 
     @RequestMapping("/cartadd")
-    public String addtoCart(@RequestParam(value="user_id")Integer user_id,
-                          @RequestParam(value="book_id")Integer book_id,
+    public String addtoCart(@RequestParam(value="user_id")Integer userId,
+                          @RequestParam(value="book_id")Integer bookId,
                           @RequestParam(value="num")Integer num)
     {
-        List<Map<String,Object>> result=new ArrayList<Map<String,Object>>();
-        result=jdbcTemplate.queryForList("select book.book_id from" +
-                " book,cart " +
-                "where user_id=" + user_id.toString() + " and book.book_id=cart.book_id and book.book_id="+book_id.toString());
-        if(!result.isEmpty())
-            return "-1";
-        jdbcTemplate.update("INSERT INTO cart (user_id, book_id,cart_book_num) VALUES ("+user_id.toString()+","+book_id.toString()+","+num.toString()+")");
-        return  "0";
+       return cartService.addToCart(userId,bookId,num).toString();
     }
 
     @RequestMapping("/cartdel")
-    public void cartItemDel(@RequestParam(value="user_id")Integer user_id,
-                            @RequestParam(value="book_id")Integer book_id)
+    public void cartItemDel(@RequestParam(value="user_id")Integer userId,
+                            @RequestParam(value="book_id")Integer bookId)
     {
-        jdbcTemplate.update("DELETE FROM cart WHERE user_id="+user_id.toString()+" AND book_id="+book_id.toString());
+        cartService.deleteFromCart(userId,bookId);
     }
 
 }

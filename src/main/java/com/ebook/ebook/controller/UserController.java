@@ -1,6 +1,7 @@
 package com.ebook.ebook.controller;
 
 import com.ebook.ebook.entity.User;
+import com.ebook.ebook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,27 +17,15 @@ import java.util.List;
 @RestController
 public class UserController {
     @Autowired
-    JdbcTemplate jdbcTemplate;
-
+    private UserService userService;
     @RequestMapping("/login")
     public Integer Login(@RequestParam(value="username") String username,@RequestParam(value="password") String password)
     {
-        List<User> result=new ArrayList<User>();
-        result=jdbcTemplate.query(
-                "select password,user_id,user_name from user where user_name='"+username+"'",
-                (rs, rowNum)->new User(
-                        rs.getInt("user_id"),
-                        rs.getString("user_name"),
-                        rs.getString("password")
-                )
-        );
-        Iterator<User> iter=result.iterator();
-        if(iter.hasNext())
-        {
-            User usr= (User) iter.next();
-            if(usr.getPassword().equals(password))
-                return usr.getUser_id();
-        }
-        return -1;
+        User user=userService.findByUserName(username);
+        if(user==null)
+            return -1;
+        if(!user.getPassword().equals(password))
+            return -1;
+        return user.getUserId();
     }
 }

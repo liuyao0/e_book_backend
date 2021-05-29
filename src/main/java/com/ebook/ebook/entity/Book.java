@@ -1,11 +1,21 @@
 package com.ebook.ebook.entity;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.*;
+import javax.persistence.*;
+import java.util.Objects;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity
+@Table(name="book",schema = "e-book")
+@JsonIgnoreProperties(value={"handler","hibernateLazyInitializer","filedHandler"})
+@JsonIdentityInfo(
+        generator =ObjectIdGenerators.PropertyGenerator.class,
+        property = "bookId"
+)
 public class Book {
-    private Long book_id;
+    private Integer bookId;
     private String isbn;
     private String name;
     private String author;
@@ -14,11 +24,58 @@ public class Book {
     private Integer inventory;
     private String description;
     private String image;
-    public Book(Long book_id, String isbn, String name,
+
+    @Id
+    @Column(name="book_id")
+    @GeneratedValue(strategy = IDENTITY)
+    public Integer getBookId(){return this.bookId;}
+    public void setBookId(Integer bookId){this.bookId = bookId;}
+
+    @Basic
+    @Column(name="isbn")
+    public String getIsbn() {return this.isbn;}
+    public void setIsbn(String isbn) {this.isbn=isbn;}
+
+    @Basic
+    @Column(name="name")
+    public String getName() {return this.name;}
+    public void setName(String name) {this.name=name;}
+
+    @Basic
+    @Column(name="author")
+    public String getAuthor() {return this.author;}
+    public void setAuthor(String author){this.author=author;}
+
+    @Basic
+    @Column(name="press")
+    public String getPress() {return this.press;}
+    public void setPress(String press) {this.press=press;}
+
+    @Basic
+    @Column(name="price")
+    public BigDecimal getPrice() {return this.price;}
+    public void setPrice(BigDecimal price) {this.price=price;}
+
+    @Basic
+    @Column(name="inventory")
+    public Integer getInventory() {return this.inventory;}
+    public void setInventory(Integer inventory){this.inventory=inventory;}
+
+    @Basic
+    @Column(name="description")
+    public String getDescription() {return this.description;}
+    public void setDescription(String description){this.description=description;}
+
+    @Basic
+    @Column(name="image")
+    public String getImage() {return this.image;}
+    public void setImage(String image) {this.image=image;}
+
+    public Book(Integer bookId, String isbn, String name,
                 String author, String press, BigDecimal price,
                 Integer inventory, String description, String image)
     {
-        this.book_id=book_id;
+        this.bookId = bookId;
         this.isbn=isbn;
         this.name=name;
         this.author=author;
@@ -28,25 +85,18 @@ public class Book {
         this.description=description;
         this.image=image;
     }
+    public Book(){}
 
-    public Book(Long book_id,String isbn,String name,
-                String author,String press,BigDecimal price)
-    {
-        this.book_id=book_id;
-        this.isbn=isbn;
-        this.name=name;
-        this.author=author;
-        this.press=press;
-        this.price=price;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(bookId, book.bookId);
     }
 
-    public Long getBook_id(){return this.book_id;}
-    public String getIsbn() {return this.isbn;}
-    public String getName() {return this.name;}
-    public String getAuthor() {return this.author;}
-    public String getPress() {return this.press;}
-    public BigDecimal getPrice() {return this.price;}
-    public Integer getInventory() {return this.inventory;}
-    public String getDescription() {return this.description;}
-    public String getImage() {return this.image;}
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookId);
+    }
 }

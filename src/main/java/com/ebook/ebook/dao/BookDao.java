@@ -1,0 +1,10 @@
+package com.ebook.ebook.dao;
+
+import com.ebook.ebook.entity.Book;
+
+import java.util.List;
+
+public interface BookDao {
+    List<Book> findAll();
+    Book getOne(Integer bookId);
+}

@@ -1,0 +1,5 @@
+package com.ebook.ebook.repository;
+import com.ebook.ebook.entity.OrderDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderDetailRepository extends JpaRepository<OrderDetail,Integer> {}

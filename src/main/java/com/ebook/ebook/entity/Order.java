@@ -1,36 +1,65 @@
 package com.ebook.ebook.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity
+@Table(name="`order`",schema = "e-book")
+@JsonIgnoreProperties(value={"handler","hibernateLazyInitializer","filedHandler"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "orderId"
+)
 public class Order {
     private Integer orderId;
     private Integer userId;
-    private Date orderTime;
-    private Integer quantity;
-    private Book book;
+    private Timestamp orderTime;
+    List<OrderDetail> orderDetails=new ArrayList<>();
 
-    public Integer getOrderId() {return this.orderId;}
-    public Integer getUserId() {return this.userId;}
-    public Date getDate() { return this.orderTime;}
-    public Integer getQuantity() {return this.quantity;}
-    public Book getBook() {return this.book;}
+    @Id
+    @Column(name="order_id")
+    @GeneratedValue(strategy = IDENTITY)
+    public Integer getOrderId() {return orderId;}
+    public void setOrderId(Integer orderId) {this.orderId = orderId;}
 
-    public void setOrderId(Integer orderId) {this.orderId=orderId;}
-    public void setUserId(Integer userId) {this.userId=userId;}
-    public void setDate(Date orderTime) {this.orderTime=orderTime;}
-    public void setQuantity(Integer Quantity) {this.quantity=quantity;}
-    public void setBook(Book book) {this.book=book;}
+    @Basic
+    @Column(name="user_id")
+    public Integer getUserId() {return userId;}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-    public Order(Integer orderId, Integer userId, Date orderTime,
-                 Long book_id, String isbn, String name,
-                 String author, String press, BigDecimal price,
-                 Integer quantity)
-    {
-        this.orderId=orderId;
-        this.userId=userId;
-        this.orderTime=orderTime;
-        this.quantity=quantity;
-        this.book=new Book(book_id,isbn,name,author,press,price);
+    @Basic
+    @Column(name="order_time")
+    public Timestamp getOrderTime() {return orderTime;}
+    public void setOrderTime(Timestamp orderTime) {this.orderTime = orderTime;}
+
+    @OneToMany(targetEntity = OrderDetail.class,cascade = CascadeType.MERGE)
+    @JoinColumn(name="order_id")
+    public List<OrderDetail> getOrderDetails() {return orderDetails;}
+    public void setOrderDetails(List<OrderDetail> orderDetails) {this.orderDetails = orderDetails;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId.equals(order.orderId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
+    }
+
+    public Order() {
     }
 }
