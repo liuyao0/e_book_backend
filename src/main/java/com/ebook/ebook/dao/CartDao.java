@@ -7,7 +7,7 @@ import com.ebook.ebook.entity.CartPK;
 import java.util.Map;
 
 public interface CartDao {
-    Map<Book,Integer> findByUserId(Integer userId);
+    Map<Book,Integer> getAllBookByUserId(Integer userId);
     void changeCartNum(Integer userId,Integer bookId,Integer cartNum);
     Integer addToCart(Integer userId,Integer bookId,Integer cartNum);
     void deleteFromCart(Integer userId,Integer bookId);

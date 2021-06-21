@@ -6,13 +6,17 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ebook.ebook.entity.Book;
 import com.ebook.ebook.entity.Order;
 import com.ebook.ebook.entity.OrderDetail;
+import com.ebook.ebook.entity.User;
 import com.ebook.ebook.service.BookService;
 import com.ebook.ebook.service.OrderService;
+import com.ebook.ebook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,32 +32,19 @@ public class OrderController {
     @Autowired
     BookService bookService;
 
+    @Autowired
+    UserService userService;
+
     @RequestMapping("/orderInfo")
-    public String getOrder(@RequestParam(value="user_id")Integer userId)
+    public String getOrderByUserId(@RequestParam(value="user_id")Integer userId)
     {
-        List<Order> orders=orderService.findByUserId(userId);
-        ArrayList<JSONArray> ordersJson = new ArrayList<JSONArray>();
-        Iterator<Order> iter = orders.iterator();
-        while (iter.hasNext()) {
-            Order order=(Order) iter.next();
-            Iterator<OrderDetail> it=order.getOrderDetails().iterator();
-            while(it.hasNext()){
-                ArrayList<Object> arrayList=new ArrayList<>();
-                OrderDetail orderDetail=(OrderDetail) it.next();
-                Book book=bookService.getOne(orderDetail.getOrderDetailPK().getBookId());
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                arrayList.add(order.getOrderId());
-                arrayList.add(df.format(order.getOrderTime()));
-                arrayList.add(book.getName());
-                arrayList.add(book.getAuthor());
-                arrayList.add(book.getPress());
-                arrayList.add(book.getPrice());
-                arrayList.add(orderDetail.getQuantity());
-                ordersJson.add((JSONArray) JSONArray.toJSON(arrayList));
-            }
-        }
-        String ordersString = JSON.toJSONString(ordersJson, SerializerFeature.BrowserCompatible);
-        return ordersString;
+        return orderService.getOrderByUserId(userId);
+    }
+
+    @RequestMapping("/allOrder")
+    public String getAllOrder()
+    {
+        return orderService.getAllOrder();
     }
 
     @RequestMapping("/carttoorder")

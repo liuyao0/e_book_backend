@@ -5,6 +5,9 @@ import com.ebook.ebook.entity.Book;
 import java.util.List;
 
 public interface BookService {
-    List<Book> findAll();
-    Book getOne(Integer bookId);
+    String getAllBookInManager();
+    String getAllBook();
+    String getBookDetail(Integer bookId);
+    void setBookDeletedByBookId(Integer bookId);
+    Integer changeBook(Book book);
 }

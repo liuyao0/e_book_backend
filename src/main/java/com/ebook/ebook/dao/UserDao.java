@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface UserDao {
     User findByUserName(String userName);
+    User getOne(Integer userId);
+    Integer changeUserState(Integer userId,Boolean forbidden);
+    List<User> findAll();
 }

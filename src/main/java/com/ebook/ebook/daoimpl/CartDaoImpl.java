@@ -22,7 +22,7 @@ public class CartDaoImpl implements CartDao {
     private BookRepository bookRepository;
 
     @Override
-    public Map<Book,Integer> findByUserId(Integer userId){
+    public Map<Book,Integer> getAllBookByUserId(Integer userId){
         List<Cart> cartList=cartRepository.findAll();
         Map<Book,Integer> cartBook=new HashMap<>();
         Iterator<Cart> iterator=cartList.iterator();

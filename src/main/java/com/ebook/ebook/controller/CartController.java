@@ -24,32 +24,15 @@ public class CartController {
     private CartService cartService;
 
     @RequestMapping("/cart")
-    public String  cartData(@RequestParam(value = "user_id")Integer userId) {
-        Map<Book,Integer> cartBook=cartService.findByUserId(userId);
-        ArrayList<JSONArray> booksJson = new ArrayList<JSONArray>();
-        for(Map.Entry<Book,Integer> entry:cartBook.entrySet()){
-            Book book=entry.getKey();
-            Integer cartBookNum=entry.getValue();
-            ArrayList<Object> arrayList = new ArrayList<Object>();
-            arrayList.add(book.getBookId());
-            arrayList.add(book.getIsbn());
-            arrayList.add(book.getImage());
-            arrayList.add(book.getName());
-            arrayList.add(book.getAuthor());
-            arrayList.add(book.getPress());
-            arrayList.add(book.getPrice());
-            arrayList.add(cartBookNum);
-            booksJson.add((JSONArray)JSONArray.toJSON(arrayList));
-        }
-        String booksString = JSON.toJSONString(booksJson, SerializerFeature.BrowserCompatible);
-        return booksString;
+    public String getAllBookInCartByUserId(@RequestParam(value = "user_id")Integer userId) {
+         return cartService.getAllBookInCartByUserId(userId);
+
     }
 
     @RequestMapping("/cartchange")
     public void changeCart(@RequestParam(value="user_id")Integer userId,
                              @RequestParam(value="book_id")Integer bookId,
                              @RequestParam(value="num")Integer num
-
 
     )
     {

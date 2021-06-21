@@ -5,6 +5,7 @@ import com.ebook.ebook.entity.Order;
 import java.util.List;
 
 public interface OrderService {
-    List<Order> findByUserId(Integer userId);
+    String getOrderByUserId(Integer userId);
     Integer cartToOrder(Integer userId);
+    String getAllOrder();
 }

@@ -18,6 +18,9 @@ public class User  {
     private Integer userId;
     private String name;
     private String password;
+    private  Integer type;
+    private String email;
+    private Boolean forbidden;
     public User() {
     }
     @Id
@@ -38,12 +41,29 @@ public class User  {
         this.password = password;
     }
 
-    public User(Integer userId, String user_name, String password)
-    {
+    @Basic
+    @Column(name="user_type")
+    public Integer getType() {return type;}
+    public void setType(Integer type) {this.type = type;}
+
+    public User(Integer userId, String name, String password, Integer type, String email, Boolean forbidden) {
         this.userId = userId;
-        this.name = user_name;
+        this.name = name;
         this.password = password;
+        this.type = type;
+        this.email = email;
+        this.forbidden = forbidden;
     }
+
+    @Basic
+    @Column(name="email")
+    public String getEmail(){return email;}
+    public void setEmail(String email) { this.email = email; }
+
+    @Basic
+    @Column(name="user_forbidden")
+    public Boolean getForbidden() { return forbidden; }
+    public void setForbidden(Boolean forbidden) { this.forbidden = forbidden; }
 
     @Override
     public boolean equals(Object o) {

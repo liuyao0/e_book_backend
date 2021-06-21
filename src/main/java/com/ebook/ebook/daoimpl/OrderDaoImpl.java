@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
+
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -54,5 +55,8 @@ public class OrderDaoImpl implements OrderDao {
         return 1;
     }
 
-
+    @Override
+    public List<Order> findAll(){
+        return orderRepository.findAll();
+    }
 }

@@ -24,6 +24,7 @@ public class Book {
     private Integer inventory;
     private String description;
     private String image;
+    private Boolean deleted;
 
     @Id
     @Column(name="book_id")
@@ -71,21 +72,28 @@ public class Book {
     public String getImage() {return this.image;}
     public void setImage(String image) {this.image=image;}
 
-    public Book(Integer bookId, String isbn, String name,
-                String author, String press, BigDecimal price,
-                Integer inventory, String description, String image)
+    @Basic
+    @Column(name="book_deleted")
+    public Boolean getDeleted() {return deleted;}
+    public void setDeleted(Boolean deleted) {this.deleted = deleted;}
+
+    public Book(Integer bookId, String name,String isbn,String author, String press, BigDecimal price, String description, Integer inventory,String image)
     {
         this.bookId = bookId;
-        this.isbn=isbn;
-        this.name=name;
-        this.author=author;
-        this.press=press;
-        this.price=price;
-        this.inventory=inventory;
-        this.description=description;
-        this.image=image;
+        this.isbn = isbn;
+        this.name = name;
+        this.author = author;
+        this.press = press;
+        this.price = price;
+        this.inventory = inventory;
+        this.description = description;
+        this.image = image;
     }
-    public Book(){}
+
+    public Book()
+    {
+
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -99,4 +107,6 @@ public class Book {
     public int hashCode() {
         return Objects.hash(bookId);
     }
+
+
 }
