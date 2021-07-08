@@ -2,6 +2,7 @@ package com.ebook.ebook.service;
 
 import com.ebook.ebook.entity.Book;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface BookService {
@@ -10,4 +11,5 @@ public interface BookService {
     String getBookDetail(Integer bookId);
     void setBookDeletedByBookId(Integer bookId);
     Integer changeBook(Book book);
+    String getSalesRanking(Timestamp beginTime,Timestamp endTime);
 }

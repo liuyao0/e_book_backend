@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +46,14 @@ public class UserController {
     @RequestMapping("/setUserState")
     public Integer changeUserState(@RequestParam(value="user_id") Integer userId,@RequestParam(value="state") Integer state){
         return userService.changeUserState(userId,state==1);
+    }
+
+    @RequestMapping("/getConsumeRanking")
+    public String getConsumeRankings(@RequestParam(value="begin_time") Long beginTime, @RequestParam(value="end_time") Long endTime)
+    {
+        Timestamp beginTimestamp=new Timestamp(beginTime);
+        Timestamp endTimestamp=new Timestamp(endTime);
+        return userService.getConsumeRankings(beginTimestamp,endTimestamp);
     }
 
 }

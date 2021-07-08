@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.lang.*;
+import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.util.Map;
 
 @CrossOrigin
@@ -50,6 +52,14 @@ public class BookController {
                 (String) map.get("imgUrl"));
         book.setDeleted(false);
         return bookService.changeBook(book);
+    }
+
+    @RequestMapping("/getSalesRanking")
+    public String getSalesRanking(@RequestParam(value="begin_time") Long beginTime, @RequestParam(value="end_time") Long endTime)
+    {
+        Timestamp beginTimestamp=new Timestamp(beginTime);
+        Timestamp endTimestamp=new Timestamp(endTime);
+        return bookService.getSalesRanking(beginTimestamp,endTimestamp);
     }
 }
 
