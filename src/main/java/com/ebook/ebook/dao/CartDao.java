@@ -11,4 +11,5 @@ public interface CartDao {
     void changeCartNum(Integer userId,Integer bookId,Integer cartNum);
     Integer addToCart(Integer userId,Integer bookId,Integer cartNum);
     void deleteFromCart(Integer userId,Integer bookId);
+    void deleteBookFromCartById(Integer bookId);
 }

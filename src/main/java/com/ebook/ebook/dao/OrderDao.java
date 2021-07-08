@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface OrderDao {
     List<Order> findByUserId(Integer userId);
-    Integer cartToOrder(Integer userId);
+    String cartToOrder(Integer userId);
     List<Order> findAll();
 }

@@ -29,17 +29,36 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Integer cartToOrder(Integer userId){
+    public String cartToOrder(Integer userId){
+        String res="";
         List<Cart> cartList=cartRepository.findAll().stream().filter((Cart cart)->
-                cart.getCartPK().getUserId().equals(userId)).collect(Collectors.toList());
+            cart.getCartPK().getUserId().equals(userId)).collect(Collectors.toList());
+
         if(cartList.isEmpty())
-            return -2;
+            return "购物车为空！";
+
+        for(Cart cart:cartList)
+        {
+            Book book=bookRepository.getOne(cart.getCartPK().getBookId());
+            if(book.getInventory()<cart.getCartBookNum())
+                res=res+"["+book.getName()+"]";
+        }
+
+        if(!res.isEmpty())
+        {
+            res+="库存不足！";
+            return res;
+        }
+
         Iterator<Cart> iterator=cartList.iterator();
         Order order=new Order();
+
         List<OrderDetail> orderDetailList=new ArrayList<>();
         Timestamp orderTime=new Timestamp(System.currentTimeMillis());
+
         order.setUserId(userId);
         order.setOrderTime(orderTime);
+
         orderRepository.save(order);
         Integer orderId=order.getOrderId();
         while(iterator.hasNext()){
@@ -49,10 +68,12 @@ public class OrderDaoImpl implements OrderDao {
             OrderDetail orderDetail=new OrderDetail(orderDetailPK,book.getPrice(),cart.getCartBookNum());
             orderDetailList.add(orderDetail);
             cartRepository.delete(cart);
+            book.setInventory(book.getInventory()-cart.getCartBookNum());
+            bookRepository.save(book);
         }
         order.setOrderDetails(orderDetailList);
         orderRepository.save(order);
-        return 1;
+        return "";
     }
 
     @Override

@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Integer cartToOrder(Integer userId){
+    public String cartToOrder(Integer userId){
         return orderDao.cartToOrder(userId);
     }
 

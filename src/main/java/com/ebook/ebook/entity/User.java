@@ -46,6 +46,15 @@ public class User  {
     public Integer getType() {return type;}
     public void setType(Integer type) {this.type = type;}
 
+    public User(String name, String password, String email) {
+        this.userId = 0;
+        this.type=1;
+        this.forbidden=false;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
     public User(Integer userId, String name, String password, Integer type, String email, Boolean forbidden) {
         this.userId = userId;
         this.name = name;

@@ -39,11 +39,28 @@ public class UserDaoImpl implements UserDao {
     public Integer changeUserState(Integer userId,Boolean forbidden)
     {
         Optional<User> userOptional=userRepository.findById(userId);
-        if(userOptional.isEmpty())
+        if(!userOptional.isPresent())
             return -1;
         User user=userOptional.get();
         user.setForbidden(forbidden);
         userRepository.save(user);
         return 0;
     }
+
+    @Override
+    public Integer checkUserName(String userName)
+    {
+        List<User> userList=userRepository.findByName(userName);
+        if(userList.isEmpty())
+            return 0;
+        else
+            return 1;
+    }
+
+    @Override
+    public void addUser(User user)
+    {
+        userRepository.save(user);
+    }
+
 }

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,4 +48,32 @@ public class UserController {
         return userService.changeUserState(userId,state==1);
     }
 
+    @RequestMapping("/getConsumeRanking")
+    public String getConsumeRankings(@RequestParam(value="begin_time") Long beginTime, @RequestParam(value="end_time") Long endTime)
+    {
+        Timestamp beginTimestamp=new Timestamp(beginTime);
+        Timestamp endTimestamp=new Timestamp(endTime);
+        return userService.getConsumeRankings(beginTimestamp,endTimestamp);
+    }
+
+    @RequestMapping("/getConsumeBook")
+    public String getConsumeBooks(@RequestParam(value="begin_time") Long beginTime, @RequestParam(value="end_time") Long endTime, @RequestParam(value = "user_id") Integer userId)
+    {
+        Timestamp beginTimestamp=new Timestamp(beginTime);
+        Timestamp endTimestamp=new Timestamp(endTime);
+        return userService.getConsumeBooks(beginTimestamp,endTimestamp,userId);
+    }
+
+    @RequestMapping("/usernameExist")
+    public Integer checkUserName(@RequestParam(value = "username") String userName)
+    {
+        return userService.checkUserName(userName);
+    }
+
+    @RequestMapping("/addUser")
+    public void addUser(@RequestParam(value = "username") String userName,@RequestParam(value = "password") String password,@RequestParam(value = "email") String email)
+    {
+        User user=new User(userName,password,email);
+        userService.addUser(user);
+    }
 }

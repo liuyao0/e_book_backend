@@ -9,4 +9,6 @@ public interface UserDao {
     User getOne(Integer userId);
     Integer changeUserState(Integer userId,Boolean forbidden);
     List<User> findAll();
+    Integer checkUserName(String userName);
+    void addUser(User user);
 }
