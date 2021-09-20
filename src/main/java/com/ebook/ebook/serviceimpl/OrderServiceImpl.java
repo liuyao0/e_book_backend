@@ -12,6 +12,7 @@ import com.ebook.ebook.entity.OrderDetail;
 import com.ebook.ebook.entity.User;
 import com.ebook.ebook.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -67,8 +68,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public String cartToOrder(Integer userId){
-        return orderDao.cartToOrder(userId);
+    @JmsListener(destination = "orderRequestBox")
+    public void cartToOrder(Integer userId){
+        orderDao.cartToOrder(userId);
     }
 
     @Override

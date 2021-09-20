@@ -7,14 +7,14 @@ import com.ebook.ebook.entity.Book;
 import com.ebook.ebook.entity.Order;
 import com.ebook.ebook.entity.OrderDetail;
 import com.ebook.ebook.entity.User;
-import com.ebook.ebook.service.BookService;
-import com.ebook.ebook.service.OrderService;
-import com.ebook.ebook.service.UserService;
+import com.ebook.ebook.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -35,6 +35,18 @@ public class OrderController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CartService cartService;
+
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
+    @Autowired
+    MessageSendService messageSendService;
+
+    @Autowired
+    JmsTemplate jmsTemplate;
+
     @RequestMapping("/orderInfo")
     public String getOrderByUserId(@RequestParam(value="user_id")Integer userId)
     {
@@ -49,6 +61,6 @@ public class OrderController {
 
     @RequestMapping("/carttoorder")
     public String cartToOrder(@RequestParam(value="user_id") Integer userId) {
-        return orderService.cartToOrder(userId).toString();
+        return messageSendService.sendCartToOrderMessage(userId);
     }
 }

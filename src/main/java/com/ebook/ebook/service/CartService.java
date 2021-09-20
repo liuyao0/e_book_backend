@@ -9,4 +9,5 @@ public interface CartService {
     Integer addToCart(Integer userId,Integer bookId,Integer cartNum);
     void deleteFromCart(Integer userID,Integer bookId);
     String getAllBookInCartByUserId(Integer userId);
+    String checkBookInCartInventory(Integer userId);
 }

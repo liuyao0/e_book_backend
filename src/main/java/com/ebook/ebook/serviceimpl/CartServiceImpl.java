@@ -59,4 +59,10 @@ public class CartServiceImpl implements CartService {
         return booksString;
     }
 
+    @Override
+    public String checkBookInCartInventory(Integer userId)
+    {
+        return cartDao.checkBookInCartInventory(userId);
+    }
+
 }

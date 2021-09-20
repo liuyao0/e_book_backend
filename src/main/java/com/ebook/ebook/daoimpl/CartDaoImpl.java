@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class CartDaoImpl implements CartDao {
@@ -78,5 +79,30 @@ public class CartDaoImpl implements CartDao {
             if(cart.getCartPK().getBookId()==bookId)
                 cartRepository.delete(cart);
         }
+    }
+
+    @Override
+    public String checkBookInCartInventory(Integer userId)
+    {
+        String res="";
+        List<Cart> cartList=cartRepository.findAll().stream().filter((Cart cart)->
+                cart.getCartPK().getUserId().equals(userId)).collect(Collectors.toList());
+
+        if(cartList.isEmpty())
+            return "购物车为空！";
+
+        for(Cart cart:cartList)
+        {
+            Book book=bookRepository.getOne(cart.getCartPK().getBookId());
+            if(book.getInventory()<cart.getCartBookNum())
+                res=res+"["+book.getName()+"]";
+        }
+
+        if(!res.isEmpty())
+        {
+            res+="库存不足！";
+            return res;
+        }
+        return "";
     }
 }
