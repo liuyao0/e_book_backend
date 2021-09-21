@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +36,10 @@ public class OrderServiceImpl implements OrderService{
     private UserDao userDao;
 
     @Override
-    public String getOrderByUserId(Integer userId){
+    public String getOrderByUser(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse){
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "[]";
         List<Order> orders=orderDao.findByUserId(userId);
         Collections.reverse(orders);
         ArrayList<JSONArray> ordersJson = new ArrayList<JSONArray>();

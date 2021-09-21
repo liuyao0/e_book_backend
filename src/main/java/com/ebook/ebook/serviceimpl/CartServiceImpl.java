@@ -12,6 +12,8 @@ import com.ebook.ebook.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,23 +24,35 @@ public class CartServiceImpl implements CartService {
     private CartDao cartDao;
 
     @Override
-    public void changeCartNum(Integer userId,Integer bookId,Integer cartNum){
+    public void changeCartNum(Integer bookId, Integer cartNum, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return;
         cartDao.changeCartNum(userId,bookId,cartNum);
     }
 
     @Override
-    public Integer addToCart(Integer userId,Integer bookId,Integer cartNum){
+    public String addToCart(Integer bookId,Integer cartNum,HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse){
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "您还没有登录！";
         return cartDao.addToCart(userId,bookId,cartNum);
     }
 
     @Override
-    public void deleteFromCart(Integer userId,Integer bookId){
+    public void deleteFromCart(Integer bookId,HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse){
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return;
         cartDao.deleteFromCart(userId,bookId);
     }
 
     @Override
-    public String getAllBookInCartByUserId(Integer userId)
+    public String getAllBookInCartByUserId(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse)
     {
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "[]";
         Map<Book,Integer> books=cartDao.getAllBookByUserId(userId);
         ArrayList<JSONArray> booksJson = new ArrayList<JSONArray>();
         for(Map.Entry<Book,Integer> entry:books.entrySet()){
@@ -60,8 +74,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String checkBookInCartInventory(Integer userId)
+    public String checkBookInCartInventory(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse)
     {
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "您还没有登录！";
         return cartDao.checkBookInCartInventory(userId);
     }
 

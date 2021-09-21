@@ -12,6 +12,7 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.converter.MessageConverter;
+
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 
 import javax.jms.ConnectionFactory;

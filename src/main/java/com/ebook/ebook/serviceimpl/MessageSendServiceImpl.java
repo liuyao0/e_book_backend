@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Service
 public class MessageSendServiceImpl implements MessageSendService {
 
@@ -15,11 +18,14 @@ public class MessageSendServiceImpl implements MessageSendService {
     @Autowired
     JmsTemplate jmsTemplate;
 
-    public String sendCartToOrderMessage(Integer userId)
+    public String sendCartToOrderMessage(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
     {
-        String checkResult=cartService.checkBookInCartInventory(userId);
+        String checkResult=cartService.checkBookInCartInventory(httpServletRequest,httpServletResponse);
         if(!checkResult.isEmpty())
             return checkResult;
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "您还没有登录！";
         jmsTemplate.convertAndSend("orderRequestBox",userId);
         return "";
     }

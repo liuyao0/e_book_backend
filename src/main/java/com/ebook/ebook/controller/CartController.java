@@ -7,41 +7,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class CartController {
     @Autowired
     private CartService cartService;
 
     @RequestMapping("/cart")
-    public String getAllBookInCartByUserId(@RequestParam(value = "user_id")Integer userId) {
-         return cartService.getAllBookInCartByUserId(userId);
+    public String getAllBookInCartByUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+         return cartService.getAllBookInCartByUserId(httpServletRequest,httpServletResponse);
 
     }
 
     @RequestMapping("/cartchange")
-    public void changeCart(@RequestParam(value="user_id")Integer userId,
-                             @RequestParam(value="book_id")Integer bookId,
-                             @RequestParam(value="num")Integer num
+    public void changeCart(@RequestParam(value="book_id")Integer bookId,
+                           @RequestParam(value="num")Integer num,
+                           HttpServletRequest httpServletRequest,
+                           HttpServletResponse httpServletResponse
 
     )
     {
-        cartService.changeCartNum(userId,bookId,num);
+        cartService.changeCartNum(bookId,num,httpServletRequest,httpServletResponse);
     }
 
     @RequestMapping("/cartadd")
-    public String addtoCart(@RequestParam(value="user_id")Integer userId,
-                          @RequestParam(value="book_id")Integer bookId,
-                          @RequestParam(value="num")Integer num)
+    public String addtoCart(@RequestParam(value="book_id")Integer bookId,
+                            @RequestParam(value="num")Integer num,
+                            HttpServletRequest httpServletRequest,
+                            HttpServletResponse httpServletResponse)
     {
-       return cartService.addToCart(userId,bookId,num).toString();
+       return cartService.addToCart(bookId,num,httpServletRequest,httpServletResponse).toString();
     }
 
     @RequestMapping("/cartdel")
-    public void cartItemDel(@RequestParam(value="user_id")Integer userId,
-                            @RequestParam(value="book_id")Integer bookId)
+    public void cartItemDel(@RequestParam(value="book_id")Integer bookId,
+                            HttpServletRequest httpServletRequest,
+                            HttpServletResponse httpServletResponse)
     {
-        cartService.deleteFromCart(userId,bookId);
+        cartService.deleteFromCart(bookId,httpServletRequest,httpServletResponse);
     }
 
 }

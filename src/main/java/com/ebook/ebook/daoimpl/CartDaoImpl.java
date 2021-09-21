@@ -50,14 +50,14 @@ public class CartDaoImpl implements CartDao {
     }
 
     @Override
-    public Integer addToCart(Integer userId,Integer bookId,Integer cartNum){
+    public String addToCart(Integer userId,Integer bookId,Integer cartNum){
         CartPK cartPK=new CartPK(userId,bookId);
         Cart cart=new Cart(cartPK,cartNum);
         if(cartRepository.findByCartPK(cartPK).iterator().hasNext())
-            return -1;
+            return "该书籍已在购物车中！";
         else
             cartRepository.save(cart);
-        return 0;
+        return "";
     }
 
     @Override

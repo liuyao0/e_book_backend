@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.undertow.UndertowWebServer;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -115,8 +117,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String getConsumeBooks(Timestamp beginTime, Timestamp endTime,Integer userId)
+    public String getConsumeBooks(Timestamp beginTime, Timestamp endTime,HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse)
     {
+        Integer userId=(Integer)(httpServletRequest.getSession().getAttribute("userId"));
+        if(userId==null)
+            return "[]";
         BigDecimal total=new BigDecimal(0);
         List<Order> orderList=orderDao.findByUserId(userId);
         orderList=orderList.stream().filter(order -> {
@@ -185,5 +190,30 @@ public class UserServiceImpl implements UserService{
     public void addUser(User user)
     {
         userDao.addUser(user);
+    }
+
+    @Override
+    public String login(String username, String password, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+    {
+        User user=userDao.findByUserName(username);
+        if(user==null)
+            return "-1,-1";
+        if(!user.getPassword().equals(password))
+            return "-1,-1";
+        if(user.getForbidden())
+            return "-1,-2";
+        httpServletRequest.getSession().setAttribute("userId", user.getUserId());
+        System.out.println((Integer)httpServletRequest.getSession().getAttribute("userId"));
+        return user.getUserId().toString()+','+user.getType();
+    }
+
+    @Override
+    public String getLoggedUsernameAndUserType(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse)
+    {
+        if(httpServletRequest.getSession().getAttribute("userId")==null)
+            return "";
+        Integer userId=(Integer) httpServletRequest.getSession().getAttribute("userId");
+        User user=userDao.getOne(userId);
+        return user.getName().toString()+","+user.getType().toString();
     }
 }

@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
 
-@CrossOrigin
 @RestController
 public class BookController {
     @Autowired
