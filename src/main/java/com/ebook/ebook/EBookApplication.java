@@ -29,6 +29,7 @@ public class EBookApplication {
         return factory;
     }
 
+
     @Bean
     public MessageConverter jacksonJmsMessageConverter()
     {
@@ -37,7 +38,6 @@ public class EBookApplication {
         converter.setTypeIdPropertyName("_type");
         return converter;
     }
-
 
     public static void main(String[] args) {
         SpringApplication.run(EBookApplication.class, args);

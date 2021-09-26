@@ -203,7 +203,6 @@ public class UserServiceImpl implements UserService{
         if(user.getForbidden())
             return "-1,-2";
         httpServletRequest.getSession().setAttribute("userId", user.getUserId());
-        System.out.println((Integer)httpServletRequest.getSession().getAttribute("userId"));
         return user.getUserId().toString()+','+user.getType();
     }
 
