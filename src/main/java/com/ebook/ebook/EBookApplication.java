@@ -14,11 +14,14 @@ import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.converter.MessageConverter;
 
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.jms.ConnectionFactory;
 
 @SpringBootApplication
 @EnableJms
+@EnableWebSocket
 public class EBookApplication {
     @Bean
     public JmsListenerContainerFactory<?> jmsListenerContainerFactory(@Qualifier("jmsConnectionFactory")ConnectionFactory connectionFactory,
@@ -37,6 +40,11 @@ public class EBookApplication {
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
         return converter;
+    }
+
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
     }
 
     public static void main(String[] args) {
