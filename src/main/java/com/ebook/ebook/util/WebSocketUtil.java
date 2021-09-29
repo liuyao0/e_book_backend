@@ -1,10 +1,15 @@
 package com.ebook.ebook.util;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
 
 
 public class WebSocketUtil {
@@ -43,8 +48,15 @@ public class WebSocketUtil {
         }
     }
 
-    public static void sendMessageToAllUsers(String message)
+    public synchronized static void sendMessageToAllUsers(String message)
     {
         usersOnline.forEach((username,session)->sendMessage(session,message));
+    }
+
+    public synchronized static ArrayList<String> getOnlineUsersUsername()
+    {
+        ArrayList<String> arrayList=new ArrayList<>();
+        usersOnline.forEach((username,session)->arrayList.add(username));
+        return arrayList;
     }
 }

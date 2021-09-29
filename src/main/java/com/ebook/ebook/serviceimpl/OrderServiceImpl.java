@@ -14,6 +14,8 @@ import com.ebook.ebook.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,6 +76,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     @JmsListener(destination = "orderRequestBox")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void cartToOrder(Integer userId){
         orderDao.cartToOrder(userId);
     }
