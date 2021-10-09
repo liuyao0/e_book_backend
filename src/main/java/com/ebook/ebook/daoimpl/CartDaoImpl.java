@@ -1,10 +1,10 @@
 package com.ebook.ebook.daoimpl;
 
+import com.ebook.ebook.dao.BookDao;
 import com.ebook.ebook.dao.CartDao;
 import com.ebook.ebook.entity.Book;
 import com.ebook.ebook.entity.Cart;
 import com.ebook.ebook.entity.CartPK;
-import com.ebook.ebook.repository.BookRepository;
 import com.ebook.ebook.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,7 +20,7 @@ public class CartDaoImpl implements CartDao {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private BookRepository bookRepository;
+    private BookDao bookDao;
 
     @Override
     public Map<Book,Integer> getAllBookByUserId(Integer userId){
@@ -30,7 +30,7 @@ public class CartDaoImpl implements CartDao {
         while(iterator.hasNext()){
             Cart cart=(Cart) iterator.next();
             if(cart.getCartPK().getUserId().equals(userId)){
-                Book book=bookRepository.getOne(cart.getCartPK().getBookId());
+                Book book=bookDao.getOne(cart.getCartPK().getBookId());
                 cartBook.put(book,cart.getCartBookNum());
             }
         }
@@ -93,7 +93,7 @@ public class CartDaoImpl implements CartDao {
 
         for(Cart cart:cartList)
         {
-            Book book=bookRepository.getOne(cart.getCartPK().getBookId());
+            Book book=bookDao.getOne(cart.getCartPK().getBookId());
             if(book.getInventory()<cart.getCartBookNum())
                 res=res+"["+book.getName()+"]";
         }

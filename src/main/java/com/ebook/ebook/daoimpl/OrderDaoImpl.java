@@ -1,5 +1,6 @@
 package com.ebook.ebook.daoimpl;
 
+import com.ebook.ebook.dao.BookDao;
 import com.ebook.ebook.dao.OrderDao;
 import com.ebook.ebook.entity.*;
 import com.ebook.ebook.repository.BookRepository;
@@ -22,7 +23,7 @@ public class OrderDaoImpl implements OrderDao {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private BookRepository bookRepository;
+    private BookDao bookDao;
     @Override
     public List<Order> findByUserId(Integer userId){
         return orderRepository.findByUserId(userId);
@@ -47,12 +48,12 @@ public class OrderDaoImpl implements OrderDao {
         while(iterator.hasNext()){
             Cart cart=(Cart) iterator.next();
             OrderDetailPK orderDetailPK=new OrderDetailPK(orderId,cart.getCartPK().getBookId());
-            Book book=bookRepository.getOne(cart.getCartPK().getBookId());
+            Book book=bookDao.getOne(cart.getCartPK().getBookId());
             OrderDetail orderDetail=new OrderDetail(orderDetailPK,book.getPrice(),cart.getCartBookNum());
             orderDetailList.add(orderDetail);
             cartRepository.delete(cart);
             book.setInventory(book.getInventory()-cart.getCartBookNum());
-            bookRepository.save(book);
+            bookDao.setBook(book);
         }
         order.setOrderDetails(orderDetailList);
         orderRepository.save(order);

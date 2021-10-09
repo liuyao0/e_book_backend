@@ -19,10 +19,13 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.jms.ConnectionFactory;
 
+
 @SpringBootApplication
 @EnableJms
 @EnableWebSocket
 public class EBookApplication {
+    public final String projectName="e-book";
+
     @Bean
     public JmsListenerContainerFactory<?> jmsListenerContainerFactory(@Qualifier("jmsConnectionFactory")ConnectionFactory connectionFactory,
                                                                       DefaultJmsListenerContainerFactoryConfigurer configurer)

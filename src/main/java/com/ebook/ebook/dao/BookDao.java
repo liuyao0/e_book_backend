@@ -9,4 +9,5 @@ public interface BookDao {
     Book getOne(Integer bookId);
     void setBookDeletedByBookId(Integer bookId);
     Integer changeBook(Book book);
+    void setBook(Book book);
 }

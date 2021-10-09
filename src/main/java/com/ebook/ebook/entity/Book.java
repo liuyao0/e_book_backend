@@ -77,7 +77,15 @@ public class Book {
     public Boolean getDeleted() {return deleted;}
     public void setDeleted(Boolean deleted) {this.deleted = deleted;}
 
-    public Book(Integer bookId, String name,String isbn,String author, String press, BigDecimal price, String description, Integer inventory,String image)
+    public Book(Integer bookId,
+                String name,
+                String isbn,
+                String author,
+                String press,
+                BigDecimal price,
+                String description,
+                Integer inventory,
+                String image)
     {
         this.bookId = bookId;
         this.isbn = isbn;
@@ -88,6 +96,19 @@ public class Book {
         this.inventory = inventory;
         this.description = description;
         this.image = image;
+    }
+
+    public Book(Integer bookId, String isbn, String name, String author, String press, BigDecimal price, Integer inventory, String description, String image, Boolean deleted) {
+        this.bookId = bookId;
+        this.isbn = isbn;
+        this.name = name;
+        this.author = author;
+        this.press = press;
+        this.price = price;
+        this.inventory = inventory;
+        this.description = description;
+        this.image = image;
+        this.deleted = deleted;
     }
 
     public Book()
