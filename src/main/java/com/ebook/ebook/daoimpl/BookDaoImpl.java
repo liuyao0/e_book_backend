@@ -70,7 +70,10 @@ public class BookDaoImpl implements BookDao {
     public Book getOne(Integer bookId){
         Book book=eBookRedisUtil.getBookByBookId(bookId);
         if(book==null)
-            book=getOne(bookId);
+        {
+            eBookRedisUtil.setBook(book);
+            book=bookRepository.getOne(bookId);
+        }
         return book;
     }
     @Override

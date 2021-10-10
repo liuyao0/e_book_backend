@@ -19,7 +19,7 @@ public class EBookRedisUtil {
 
     public String getRedisKeyByBookId(Integer bookId)
     {
-        return projectName+"_book"+bookId+":";
+        return projectName+"_book"+bookId;
     }
 
     public void cleanBookIdSet()
