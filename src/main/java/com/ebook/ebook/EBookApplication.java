@@ -1,6 +1,7 @@
 package com.ebook.ebook;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -18,6 +19,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.jms.ConnectionFactory;
+import javax.xml.ws.Endpoint;
 
 
 @SpringBootApplication
@@ -25,6 +27,7 @@ import javax.jms.ConnectionFactory;
 @EnableWebSocket
 public class EBookApplication {
     public final String projectName="e-book";
+
 
     @Bean
     public JmsListenerContainerFactory<?> jmsListenerContainerFactory(@Qualifier("jmsConnectionFactory")ConnectionFactory connectionFactory,
