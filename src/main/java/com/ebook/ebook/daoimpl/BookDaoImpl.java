@@ -5,6 +5,7 @@ import com.ebook.ebook.entity.Book;
 import com.ebook.ebook.repository.BookRepository;
 import com.ebook.ebook.util.EBookRedisUtil;
 import com.ebook.ebook.util.RedisUtil;
+import com.ebook.ebook.util.SolrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -31,6 +32,9 @@ public class BookDaoImpl implements BookDao {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private SolrUtil solrUtil;
 
     @Override
     public List<Book> findAll(){
@@ -89,6 +93,7 @@ public class BookDaoImpl implements BookDao {
         Integer bookId=bookRepository.save(book).getBookId();
         book.setBookId(bookId);
         eBookRedisUtil.setBook(book);
+        solrUtil.saveBook(book);
         return bookId;
     }
 
@@ -96,6 +101,7 @@ public class BookDaoImpl implements BookDao {
     public void setBook(Book book)
     {
         eBookRedisUtil.setBook(book);;
+        solrUtil.saveBook(book);
         bookRepository.save(book);
     }
 }

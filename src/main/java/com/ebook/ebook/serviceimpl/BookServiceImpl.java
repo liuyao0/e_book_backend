@@ -11,10 +11,12 @@ import com.ebook.ebook.entity.Order;
 import com.ebook.ebook.entity.OrderDetail;
 import com.ebook.ebook.entity.User;
 import com.ebook.ebook.service.BookService;
+import com.ebook.ebook.util.SolrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -32,6 +34,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private OrderDao orderDao;
+
+    @Autowired
+    private SolrUtil solrUtil;
 
     @Override
     public String getAllBook()
@@ -167,4 +172,39 @@ public class BookServiceImpl implements BookService {
         return booksString;
     }
 
+    @Override
+    public String searchBook(String string)
+    {
+        ArrayList<JSONArray> booksJson = new ArrayList<JSONArray>();
+        Set<Integer> set=new HashSet<>();
+        List<Book> bookList=bookDao.findAll();
+        bookList=bookList.stream().filter(book-> book.getName().contains(string)).collect(Collectors.toList());
+        for(Book book:bookList)
+            set.add(book.getBookId());
+        List<Integer> solrBookIdList=solrUtil.searchBookByDescription(string);
+        for(Integer bookId:solrBookIdList) {
+            Book book= bookDao.getOne(bookId);
+            if(book!=null&&!set.contains(bookId))
+                bookList.add(book);
+        }
+
+        for(Book book:bookList)
+        {
+            if(book.getDeleted())
+                continue;
+            ArrayList<Object> arrayList = new ArrayList<Object>();
+            arrayList.add(book.getBookId());
+            arrayList.add(book.getName());
+            arrayList.add(book.getAuthor());
+            arrayList.add(book.getPress());
+            arrayList.add(book.getPrice());
+            arrayList.add(book.getIsbn());
+            arrayList.add(book.getInventory());
+            arrayList.add(book.getImage());
+            arrayList.add(book.getDescription());
+            booksJson.add((JSONArray) JSONArray.toJSON(arrayList));
+        }
+        String booksString = JSON.toJSONString(booksJson, SerializerFeature.BrowserCompatible);
+        return booksString;
+    }
 }

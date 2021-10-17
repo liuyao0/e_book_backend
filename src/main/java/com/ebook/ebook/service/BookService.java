@@ -12,4 +12,5 @@ public interface BookService {
     void setBookDeletedByBookId(Integer bookId);
     Integer changeBook(Book book);
     String getSalesRanking(Timestamp beginTime,Timestamp endTime);
+    String searchBook(String string);
 }

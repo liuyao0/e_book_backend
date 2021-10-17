@@ -60,6 +60,12 @@ public class BookController {
         Timestamp endTimestamp=new Timestamp(endTime);
         return bookService.getSalesRanking(beginTimestamp,endTimestamp);
     }
+
+    @RequestMapping("/search")
+    public String searchBooks(@RequestParam(value="key") String key)
+    {
+        return bookService.searchBook(key);
+    }
 }
 
 
