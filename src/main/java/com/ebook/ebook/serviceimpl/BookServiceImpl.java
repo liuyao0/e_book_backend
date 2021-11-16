@@ -3,13 +3,8 @@ package com.ebook.ebook.serviceimpl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.ebook.ebook.dao.BookDao;
-import com.ebook.ebook.dao.CartDao;
-import com.ebook.ebook.dao.OrderDao;
-import com.ebook.ebook.entity.Book;
-import com.ebook.ebook.entity.Order;
-import com.ebook.ebook.entity.OrderDetail;
-import com.ebook.ebook.entity.User;
+import com.ebook.ebook.dao.*;
+import com.ebook.ebook.entity.*;
 import com.ebook.ebook.service.BookService;
 import com.ebook.ebook.util.SolrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +32,12 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private SolrUtil solrUtil;
+
+    @Autowired
+    private BookLabelDao bookLabelDao;
+
+    @Autowired
+    private LabelDao labelDao;
 
     @Override
     public String getAllBook()
@@ -206,5 +207,51 @@ public class BookServiceImpl implements BookService {
         }
         String booksString = JSON.toJSONString(booksJson, SerializerFeature.BrowserCompatible);
         return booksString;
+    }
+
+    @Override
+    public String searchBooksByLabelName(String labelName) {
+        Set<Label> labelSetLevel1,labelSetLevel2=new HashSet<>();
+        Set<Label> labelSet=new HashSet<>();
+        Label label0= labelDao.findByName(labelName);
+        labelSet.add(label0);
+        labelSetLevel1=label0.getSimilarLabels();
+        for(Label label1:labelSetLevel1)
+            labelSetLevel2.addAll(label1.getSimilarLabels());
+        labelSet.addAll(labelSetLevel1);
+        labelSet.addAll(labelSetLevel2);
+        List<Book> bookList=new ArrayList<>();
+        for(Label label:labelSet)
+        {
+            List<Integer> bookIdList=bookLabelDao.getBookIdsByLabelName(label.getName());
+            for(Integer bookId:bookIdList)
+            {
+                Book book=bookDao.getOne(bookId);
+                if(!bookList.contains(book))
+                    bookList.add(book);
+            }
+        }
+
+        ArrayList<JSONArray> booksJson = new ArrayList<JSONArray>();
+
+        for(Book book:bookList)
+        {
+            if(book.getDeleted())
+                continue;
+            ArrayList<Object> arrayList = new ArrayList<Object>();
+            arrayList.add(book.getBookId());
+            arrayList.add(book.getName());
+            arrayList.add(book.getAuthor());
+            arrayList.add(book.getPress());
+            arrayList.add(book.getPrice());
+            arrayList.add(book.getIsbn());
+            arrayList.add(book.getInventory());
+            arrayList.add(book.getImage());
+            arrayList.add(book.getDescription());
+            booksJson.add((JSONArray) JSONArray.toJSON(arrayList));
+        }
+        String booksString = JSON.toJSONString(booksJson, SerializerFeature.BrowserCompatible);
+        return booksString;
+
     }
 }

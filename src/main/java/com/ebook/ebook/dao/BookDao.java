@@ -10,4 +10,5 @@ public interface BookDao {
     void setBookDeletedByBookId(Integer bookId);
     Integer changeBook(Book book);
     void setBook(Book book);
+
 }

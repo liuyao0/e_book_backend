@@ -66,6 +66,12 @@ public class BookController {
     {
         return bookService.searchBook(key);
     }
+
+    @RequestMapping("/searchByLabel")
+    public String searchBooksByLabel(@RequestParam(value="label") String label)
+    {
+        return bookService.searchBooksByLabelName(label);
+    }
 }
 
 

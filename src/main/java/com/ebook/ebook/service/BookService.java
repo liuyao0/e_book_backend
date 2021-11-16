@@ -13,4 +13,5 @@ public interface BookService {
     Integer changeBook(Book book);
     String getSalesRanking(Timestamp beginTime,Timestamp endTime);
     String searchBook(String string);
+    String searchBooksByLabelName(String labelName);
 }

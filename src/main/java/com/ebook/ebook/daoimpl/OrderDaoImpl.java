@@ -44,8 +44,6 @@ public class OrderDaoImpl implements OrderDao {
         order.setOrderTime(orderTime);
 
         orderRepository.save(order);
-        String str=null;
-        str.toLowerCase();
         Integer orderId=order.getOrderId();
         while(iterator.hasNext()){
             Cart cart=(Cart) iterator.next();

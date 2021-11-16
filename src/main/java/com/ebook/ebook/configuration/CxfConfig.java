@@ -1,13 +1,13 @@
 package com.ebook.ebook.configuration;
 
 import com.ebook.ebook.webservice.SearchWebService;
-import com.ebook.ebook.webserviceimpl.SearchWebServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.xml.ws.Endpoint;
+
 
 @Configuration
 public class CxfConfig {
